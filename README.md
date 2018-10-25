@@ -1,5 +1,5 @@
 # settings 
-Relay controlled features and similar.
+ROS node for relay controlled features and similar.
 In the project [PermoCar](https://github.com/Trobolit/PermoCar).
 Connected features are: relay breaking power to engines and warning light on/off.
 
