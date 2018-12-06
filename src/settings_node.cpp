@@ -15,8 +15,8 @@ struct toggleButton {
 		bool joy_last;
 };
 
-struct toggleButton emergensy_stop = {.state = true, .joy_last = false}; // A
-struct toggleButton saft_blandare = {.state = true, .joy_last = false}; // Y
+struct toggleButton emergensy_stop = {.state = true, .joy_last = false}; // A controlling engine
+struct toggleButton saft_blandare = {.state = true, .joy_last = false}; // Y controling satf_blandare
 
 void pubData();
 void dataCallback(const std_msgs::Int8MultiArray::ConstPtr& array);
@@ -32,13 +32,14 @@ void dataCallback(const std_msgs::Int8MultiArray::ConstPtr& array)
 
 void joyCallback(const sensor_msgs::Joy::ConstPtr& msg)
 {
-		toggel(msg->buttons[0], &emergensy_stop);
-		toggel(msg->buttons[3], &saft_blandare);
+		toggel(msg->buttons[0], &emergensy_stop); // A
+		toggel(msg->buttons[3], &saft_blandare); // Y
 		pubData();
 
 }
 
-
+// togel state iff the last state of the buttun wos off
+// these prohibit multipel trigers on singel press.
 void toggel(int val, struct toggleButton *b)
 {
 	if (val == 1 && !b->joy_last)
@@ -47,6 +48,11 @@ void toggel(int val, struct toggleButton *b)
 }
 
 
+// relay postion
+// [0] -> engine
+// [1] -> engien
+// [2] -> sart_balndare
+// [3] -> not used
 void pubData()
 {
 	p_data.data.push_back(emergensy_stop.state);
@@ -65,13 +71,15 @@ int main(int argc, char** argv)
 	
 	ros::Rate loop_rate(100);	
 	p_relay = n.advertise<std_msgs::Int8MultiArray>(PUB_CHEANEL, 10);
+
+	// from control panel
 	ros::Subscriber s_data = n.subscribe<std_msgs::Int8MultiArray>(SUB_CHANEL, 10, dataCallback);
+	// form PadPub
 	ros::Subscriber s_joy = n.subscribe<sensor_msgs::Joy>(JOY_SUB_NODE, 200, joyCallback);
 	
 	while(ros::ok())
 	{
 		ros::spinOnce();
-		loop_rate.sleep();
 	}
 	return 0;
 }
