@@ -26,7 +26,7 @@ void toggel(int val, struct toggleButton *b);
 void dataCallback(const std_msgs::Int8MultiArray::ConstPtr& array)
 {
 	emergensy_stop.state = (array->data[0] == 1);
-	saft_blandare.state = (array->data[1] == 1);
+	saft_blandare.state = (array->data[2] == 1);
 	pubData();
 }
 
