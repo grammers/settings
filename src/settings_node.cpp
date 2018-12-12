@@ -79,7 +79,7 @@ int main(int argc, char** argv)
 	
 	while(ros::ok())
 	{
-		ros::spinOnce();
+		ros::spin();
 	}
 	return 0;
 }
